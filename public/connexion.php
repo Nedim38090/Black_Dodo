@@ -1,5 +1,6 @@
 <?php
 
+
 require_once __DIR__ . "/../config/db.php";
 $db = getDB();
 
@@ -32,15 +33,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<h1>Connexion</h1>
-<?php if($erreurs): ?>
-    <p style="color:red;"><?= htmlspecialchars($erreurs); ?></p>
-<?php endif; ?>
-
-<form method="POST">
-    <p>Email : <input type="text" name="email"></p>
-    <p>Mot de passe : <input type="password" name="password"></p>
-    <p><button type="submit">Se connecter</button></p>
-</form>
-
-<p><a href="inscription.php">Pas encore inscrit ? Créer un compte</a></p>
