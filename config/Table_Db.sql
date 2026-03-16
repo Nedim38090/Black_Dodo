@@ -14,7 +14,11 @@ CREATE TABLE utilisateurs (
                               description_profil TEXT,
                               date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
                               PRIMARY KEY (id)
-) ENGINE=InnoDB;
+);
+ALTER TABLE utilisateurs
+    ADD COLUMN avatar VARCHAR(255) DEFAULT 'default_avatar.png',
+    ADD COLUMN discord_id VARCHAR(100),
+    ADD COLUMN twitter_handle VARCHAR(100);
 
 CREATE TABLE articles (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -25,13 +29,13 @@ CREATE TABLE articles (
                           date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
                           PRIMARY KEY (id),
                           CONSTRAINT fk_news_auteur FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE categories_boutique (
                                      id INT NOT NULL AUTO_INCREMENT,
                                      nom VARCHAR(50) NOT NULL,
                                      PRIMARY KEY (id)
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE produits (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -42,7 +46,7 @@ CREATE TABLE produits (
                           image_produit VARCHAR(255) DEFAULT 'default_item.png',
                           PRIMARY KEY (id),
                           CONSTRAINT fk_produit_categorie FOREIGN KEY (categorie_id) REFERENCES categories_boutique(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE achats (
                         id INT NOT NULL AUTO_INCREMENT,
@@ -56,7 +60,7 @@ CREATE TABLE achats (
                         PRIMARY KEY (id),
                         CONSTRAINT fk_achat_joueur FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
                         CONSTRAINT fk_achat_item FOREIGN KEY (produit_id) REFERENCES produits(id) ON DELETE RESTRICT
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE sanctions (
                            id INT NOT NULL AUTO_INCREMENT,
