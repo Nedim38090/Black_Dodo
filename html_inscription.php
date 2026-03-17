@@ -1,6 +1,7 @@
 <?php
 ?>
 <div class="auth-card">
+    <link rel="stylesheet" href="inscription_css.css">
     <h1>Créer un compte</h1>
 
     <?php if(!empty($erreurs)): ?>

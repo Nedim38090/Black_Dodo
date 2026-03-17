@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Paiement Sécurisé | Cubic</title>
-    <link rel="stylesheet" href="style_auth.css">
+    <link rel="stylesheet" href="achat_css.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>

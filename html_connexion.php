@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion | Cubic</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="connexion_css.css">
 </head>
 <body>
     <div class="auth-card">

@@ -1,0 +1,120 @@
+
+:root {
+    --bg: #0d0f12;
+    --card-bg: rgba(25, 28, 32, 0.9);
+    --primary: #6200ee;
+    --accent: #00ff88;
+    --text: #e0e6ed;
+    --danger: #ff4757;
+}
+
+body {
+    background: var(--bg);
+    background-image: radial-gradient(circle at 20% 30%, #1a1e26 0%, #0d0f12 70%);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Carte d'authentification */
+.auth-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Champs de saisie style "Cubic" */
+input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Bouton d'action principal */
+button {
+    background: var(--primary);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(98, 0, 238, 0.3);
+}
+
+button:hover {
+    background: var(--accent);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+}
+
+/* Gestion des messages d'erreur */
+.error {
+    color: var(--danger);
+    background: rgba(255, 71, 87, 0.1);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    border: 1px solid var(--danger);
+    text-align: left;
+}
+
+/* Liens vers connexion */
+.auth-card p a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.auth-card p a:hover {
+    text-decoration: underline;
+    filter: brightness(1.2);
+}

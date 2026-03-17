@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
+
+body {
+    background: #0b0d0f;
+    background-image: radial-gradient(circle at center, #1a1e26 0%, #0b0d0f 100%);
+    color: #e0e0e0;
+    font-family: 'Rajdhani', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.auth-card {
+    background: rgba(20, 23, 28, 0.95);
+    border: 1px solid #6200ee;
+    padding: 40px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 0 30px rgba(98, 0, 238, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    font-size: 2rem;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+h1 span { color: #00ff88; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-control {
+    width: 100%;
+    background: #000;
+    border: 1px solid #333;
+    padding: 14px;
+    color: #00ff88;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    box-sizing: border-box;
+    outline: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #6200ee;
+    box-shadow: 0 0 15px rgba(98, 0, 238, 0.4);
+}
+
+.btn-submit {
+    width: 100%;
+    background: #6200ee;
+    color: white;
+    border: none;
+    padding: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.btn-submit:hover {
+    background: #00ff88;
+    color: #000;
+    box-shadow: 0 0 20px #00ff88;
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    margin-top: 25px;
+    border-top: 1px solid #222;
+    padding-top: 20px;
+}
+
+.auth-footer a {
+    color: #6200ee;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 10px;
+    transition: 0.3s;
+}
+
+.auth-footer a:hover { color: #00ff88; text-shadow: 0 0 5px #00ff88; }
