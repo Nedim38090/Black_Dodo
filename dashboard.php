@@ -2,7 +2,7 @@
 <?php
 
 require_once "db.php";
-require_once "fonctions_session.php";
+
 
 if (!estAdmin()) {
     header("Location: ../connexion.php");

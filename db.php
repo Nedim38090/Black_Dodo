@@ -15,7 +15,7 @@ function getDB() {
 }
 
 function estConnecte() {
-    return isset($_SESSION['user']['id']);
+    return isset($_SESSION['user']['id']) && !empty($_SESSION['user']['id']);
 }
 
 function estAdmin() {
