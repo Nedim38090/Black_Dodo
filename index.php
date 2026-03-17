@@ -18,8 +18,9 @@ require_once __DIR__ . "/db.php";
     <div class="logo">CUBIC<span>GROUP</span></div>
     <ul class="nav-links">
         <li><a href="index.php" class="active">Accueil</a></li>
-        <li><a href="boutique.php">Boutique</a></li>
+        <li><a href="achat.php">Boutique</a></li>
         <li><a href="inscription.php" class="active">Inscription</a></li>
+        <li><a href="profil.php" class="active">Profil</a></li>
         <li><a href="connexion.php" class="btn-login">Connexion</a></li>
     </ul>
 </nav>
@@ -77,7 +78,7 @@ require_once __DIR__ . "/db.php";
 </html>
 
 <div class="ip-box" onclick="copyIP()">
-    <span id="ip-text">PLAY.CUBIC-MC.FR</span>
+    <span id="ip-text">http://localhost/Black_Dodo/</span>
     <span id="copy-confirm">Copié !</span>
 </div>
 

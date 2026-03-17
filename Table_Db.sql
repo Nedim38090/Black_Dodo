@@ -12,13 +12,10 @@ CREATE TABLE utilisateurs (
                               password VARCHAR(255) NOT NULL,
                               role ENUM('joueur', 'moderateur', 'administrateur') DEFAULT 'joueur',
                               description_profil TEXT,
-                              date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
+                              date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP;
                               PRIMARY KEY (id)
 );
-ALTER TABLE utilisateurs
-    ADD COLUMN avatar VARCHAR(255) DEFAULT 'default_avatar.png',
-    ADD COLUMN discord_id VARCHAR(100),
-    ADD COLUMN twitter_handle VARCHAR(100);
+
 
 CREATE TABLE articles (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -61,6 +58,11 @@ CREATE TABLE achats (
                         CONSTRAINT fk_achat_joueur FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
                         CONSTRAINT fk_achat_item FOREIGN KEY (produit_id) REFERENCES produits(id) ON DELETE RESTRICT
 );
+ALTER TABLE achats
+    ADD COLUMN nom VARCHAR(255),
+ADD COLUMN prenom VARCHAR(255),
+ADD COLUMN carte_bleue VARCHAR(16),
+ADD COLUMN ccb VARCHAR(4);
 
 CREATE TABLE sanctions (
                            id INT NOT NULL AUTO_INCREMENT,

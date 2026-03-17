@@ -1,7 +1,5 @@
 <?php
-<?php
-require_once "db.php";
-require_once "functions.php"; // Pour estConnecte()
+require_once __DIR__ . "/db.php";
 
 if (!estConnecte()) {
     header("Location: connexion.php");
@@ -9,68 +7,100 @@ if (!estConnecte()) {
 }
 
 $db = getDB();
-$userId = $_SESSION['user']['id'];
+$userId = (int)$_SESSION["user"]["id"];
+
+$erreur = "";
 $message = "";
 
-// LOGIQUE DE MISE À JOUR
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $desc = htmlspecialchars($_POST['description']);
-    $discord = htmlspecialchars($_POST['discord']);
-    $twitter = htmlspecialchars($_POST['twitter']);
+$q = $db->prepare("SELECT id, username, email, role,description_profil FROM utilisateurs WHERE id = ?");
+$q->execute(array($userId));
+$user = $q->fetch(PDO::FETCH_ASSOC);
 
-    $stmt = $db->prepare("UPDATE utilisateurs SET description_profil = ?, discord_id = ?, twitter_handle = ? WHERE id = ?");
-    if ($stmt->execute([$desc, $discord, $twitter, $userId])) {
-        $message = "Profil mis à jour !";
-    }
+if (!$user) {
+    session_destroy();
+    header("Location: connexion.php");
+    exit;
 }
 
-// RÉCUPÉRATION DES INFOS ACTUELLES
-$stmt = $db->prepare("SELECT * FROM utilisateurs WHERE id = ?");
-$stmt->execute([$userId]);
-$user = $stmt->fetch();
-?>
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
+    $email = isset($_POST["email"]) ? trim($_POST["email"]) : "";
+    $description = isset($_POST["description_profil"]) ? trim($_POST["description_profil"]) : "";
+    $discord = isset($_POST["discord_id"]) ? trim($_POST["discord_id"]) : "";
+    $twitter = isset($_POST["twitter_handle"]) ? trim($_POST["twitter_handle"]) : "";
 
+    if ($username === "" || $email === "") {
+        $erreur = "Pseudo et email obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erreur = "Email invalide.";
+    } else {
+        $check = $db->prepare("SELECT id FROM utilisateurs WHERE (email = ? OR username = ?) AND id != ?");
+        $check->execute(array($email, $username, $userId));
+
+        if ($check->fetch()) {
+            $erreur = "Pseudo ou email déjà utilisé.";
+        } else {
+            $avatarPath = $user["avatar"];
+
+            if (isset($_FILES["avatar"]) && $_FILES["avatar"]["error"] == 0) {
+                $allowedExt = array("jpg", "jpeg", "png", "gif", "webp");
+                $fileName = $_FILES["avatar"]["name"];
+                $tmp = $_FILES["avatar"]["tmp_name"];
+                $size = $_FILES["avatar"]["size"];
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+                if (!in_array($ext, $allowedExt)) {
+                    $erreur = "Format avatar invalide.";
+                } elseif ($size > 2 * 1024 * 1024) {
+                    $erreur = "Avatar trop lourd (max 2 Mo).";
+                } else {
+                    if (!is_dir(__DIR__ . "/uploads/avatars")) {
+                        mkdir(__DIR__ . "/uploads/avatars", 0777, true);
+                    }
+                    $newName = "avatar_" . $userId . "_" . time() . "." . $ext;
+                    $dest = __DIR__ . "/uploads/avatars/" . $newName;
+                    if (move_uploaded_file($tmp, $dest)) {
+                        $avatarPath = "uploads/avatars/" . $newName;
+                    } else {
+                        $erreur = "Erreur lors de l'upload.";
+                    }
+                }
+            }
+
+            if ($erreur === "") {
+                $up = $db->prepare("UPDATE utilisateurs SET username = ?, email = ?, avatar = ?, description_profil = ?, discord_id = ?, twitter_handle = ? WHERE id = ?");
+                $up->execute(array($username, $email, $avatarPath, $description, $discord, $twitter, $userId));
+                $_SESSION["user"]["username"] = $username;
+                $message = "Profil mis à jour.";
+                $q->execute(array($userId));
+                $user = $q->fetch(PDO::FETCH_ASSOC);
+            }
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Mon Profil | Cubic</title>
-    <link rel="stylesheet" href="../style.css">
-    <style>
-        .profile-container { max-width: 800px; margin: 50px auto; background: #1a1c1e; padding: 30px; border-radius: 10px; border: 1px solid #333; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; color: var(--primary); margin-bottom: 5px; font-weight: bold; }
-        textarea, input { width: 100%; padding: 12px; background: #080808; border: 1px solid #333; color: white; border-radius: 5px; }
-        .success { color: var(--secondary); margin-bottom: 20px; text-align: center; }
-    </style>
+    <link rel="stylesheet" href="style_auth.css">
 </head>
 <body>
-    <div class="profile-container">
-        <h1>Personnaliser mon Profil</h1>
+<div class="auth-card">
+    <h1>Mon <span>Profil</span></h1>
+    <p><a href="index.php">Accueil</a> | <a href="deconnexion.php">Déconnexion</a></p>
 
-        <?php if($message): ?>
-            <p class="success"><?= $message ?></p>
-        <?php endif; ?>
+    <?php if ($erreur): ?><p style="color:red;"><?= htmlspecialchars($erreur) ?></p><?php endif; ?>
+    <?php if ($message): ?><p style="color:green;"><?= htmlspecialchars($message) ?></p><?php endif; ?>
 
-        <form method="POST">
-            <div class="form-group">
-                <label>Ma Description</label>
-                <textarea name="description" rows="4"><?= htmlspecialchars($user['description_profil']) ?></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>ID Discord</label>
-                <input type="text" name="discord" value="<?= htmlspecialchars($user['discord_id']) ?>" placeholder="Ex: Pseudo#1234">
-            </div>
-
-            <div class="form-group">
-                <label>Lien Twitter / X</label>
-                <input type="text" name="twitter" value="<?= htmlspecialchars($user['twitter_handle']) ?>" placeholder="Ex: @CubicServer">
-            </div>
-
-            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-        </form>
-        <p style="margin-top: 20px;"><a href="index.php" style="color: #666;">← Retour</a></p>
-    </div>
-</body>
-</html>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Pseudo</label>
+            <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($user["username"]) ?>">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user["email"]) ?>">
+        </div>
+        <div

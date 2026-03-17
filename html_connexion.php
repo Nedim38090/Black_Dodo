@@ -14,9 +14,7 @@
     <div class="auth-card">
         <h1>Connexion</h1>
 
-        <?php if($erreurs): ?>
-            <p class="error"><?= $erreurs ?></p>
-        <?php endif; ?>
+
 
         <form method="POST">
             <input type="email" name="email" placeholder="Email" required>
