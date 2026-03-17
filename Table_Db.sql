@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS sanctions;
 DROP TABLE IF EXISTS achats;
 DROP TABLE IF EXISTS articles;
-DROP TABLE IF EXISTS utilisateurs;
 DROP TABLE IF EXISTS produits;
 DROP TABLE IF EXISTS categories_boutique;
+DROP TABLE IF EXISTS utilisateurs;
 
 CREATE TABLE utilisateurs (
                               id INT NOT NULL AUTO_INCREMENT,
@@ -12,10 +12,12 @@ CREATE TABLE utilisateurs (
                               password VARCHAR(255) NOT NULL,
                               role ENUM('joueur', 'moderateur', 'administrateur') DEFAULT 'joueur',
                               description_profil TEXT,
+                              avatar VARCHAR(255) DEFAULT 'uploads/avatars/default.png',
+                              discord_id VARCHAR(100),
+                              twitter_handle VARCHAR(100),
                               date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
                               PRIMARY KEY (id)
-);
-
+) ENGINE=InnoDB;
 
 CREATE TABLE articles (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -26,13 +28,13 @@ CREATE TABLE articles (
                           date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
                           PRIMARY KEY (id),
                           CONSTRAINT fk_news_auteur FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE categories_boutique (
                                      id INT NOT NULL AUTO_INCREMENT,
                                      nom VARCHAR(50) NOT NULL,
                                      PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE produits (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -43,7 +45,7 @@ CREATE TABLE produits (
                           image_produit VARCHAR(255) DEFAULT 'default_item.png',
                           PRIMARY KEY (id),
                           CONSTRAINT fk_produit_categorie FOREIGN KEY (categorie_id) REFERENCES categories_boutique(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE achats (
                         id INT NOT NULL AUTO_INCREMENT,
@@ -54,15 +56,14 @@ CREATE TABLE achats (
                         methode_paiement VARCHAR(50) DEFAULT 'Carte Bancaire',
                         transaction_id VARCHAR(100),
                         statut ENUM('en_attente', 'termine', 'echoue') DEFAULT 'termine',
+                        nom VARCHAR(255),
+                        prenom VARCHAR(255),
+                        carte_bleue VARCHAR(255),
+                        ccb VARCHAR(255),
                         PRIMARY KEY (id),
                         CONSTRAINT fk_achat_joueur FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
                         CONSTRAINT fk_achat_item FOREIGN KEY (produit_id) REFERENCES produits(id) ON DELETE RESTRICT
-);
-ALTER TABLE achats
-    ADD COLUMN nom VARCHAR(255),
-ADD COLUMN prenom VARCHAR(255),
-ADD COLUMN carte_bleue VARCHAR(16),
-ADD COLUMN ccb VARCHAR(4);
+) ENGINE=InnoDB;
 
 CREATE TABLE sanctions (
                            id INT NOT NULL AUTO_INCREMENT,
