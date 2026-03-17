@@ -12,7 +12,7 @@ CREATE TABLE utilisateurs (
                               password VARCHAR(255) NOT NULL,
                               role ENUM('joueur', 'moderateur', 'administrateur') DEFAULT 'joueur',
                               description_profil TEXT,
-                              date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP;
+                              date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
                               PRIMARY KEY (id)
 );
 
