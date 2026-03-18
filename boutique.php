@@ -61,6 +61,7 @@ foreach ($_SESSION['cart'] as $it) $cartCount += (int)$it['quantite'];
     <div class="shop-top">
         <h1 class="shop-title">Boutique <span>Cubic</span></h1>
         <a class="shop-link" href="panier.php">Voir mon panier (<?= $cartCount ?>)</a>
+        <a href="index.php" class="btn-return">Retour à l'acceuil</a>
     </div>
 
     <?php if (empty($parCategorie)): ?>

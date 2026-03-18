@@ -68,6 +68,7 @@
                 <input type="file" name="avatar">
             </div>
 
+
             <button type="submit">Enregistrer les modifications</button>
         </form>
     </main>

@@ -62,7 +62,11 @@ body {
 .label{display:block;color:#9fb0cf;font-size:.9rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px}
 .alert-error{margin:10px 0;padding:10px;border-radius:8px;background:rgba(255,93,122,.12);border:1px solid rgba(255,93,122,.45);color:#ffc2cd}
 .alert-ok{margin:10px 0;padding:10px;border-radius:8px;background:rgba(49,214,123,.12);border:1px solid rgba(49,214,123,.45);color:#b6ffd5}
-
+.btn-return{
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+}
 .btn-primary {
     padding: 8px 12px;
     border: none;
