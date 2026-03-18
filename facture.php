@@ -21,49 +21,5 @@ if (!$commande) {
 $qi = $db->prepare("SELECT * FROM commande_items WHERE commande_id = ?");
 $qi->execute([$commandeId]);
 $items = $qi->fetchAll(PDO::FETCH_ASSOC);
+require_once 'html_facture.html'
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Facture | Cubic</title>
-    <link rel="stylesheet" href="boutique.css">
-</head>
-<body>
-<div class="panel">
-    <div class="panel-card">
-        <h1 class="panel-title">Facture #<?= (int)$commande['id'] ?></h1>
-        <p class="panel-sub">Transaction : <?= htmlspecialchars($commande['transaction_id']) ?></p>
-        <p class="panel-sub">Date : <?= htmlspecialchars($commande['created_at']) ?></p>
-
-        <div class="table-wrap">
-            <table class="table">
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Qté</th>
-                    <th>Sous-total</th>
-                </tr>
-                <?php foreach ($items as $it): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($it['nom_produit']) ?></td>
-                        <td><?= number_format($it['prix_unitaire'], 2, ',', ' ') ?> €</td>
-                        <td><?= (int)$it['quantite'] ?></td>
-                        <td><?= number_format($it['prix_unitaire'] * $it['quantite'], 2, ',', ' ') ?> €</td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-
-        <div class="total-box">
-            Total payé : <strong><?= number_format($commande['total'], 2, ',', ' ') ?> €</strong>
-        </div>
-
-        <div class="actions">
-            <a class="btn-outline" href="historique.php">Voir historique</a>
-            <a class="btn-outline" href="boutique.php">Retour boutique</a>
-        </div>
-    </div>
-</div>
-</body>
-</html>

@@ -1,12 +1,17 @@
-<?php
-?>
+
+
 <link rel="stylesheet" href="inscription_css.css">
 <div class="auth-card">
+    <a href="index.php" class="btn-return">Retour à l'acceuil</a>
     <h1>Créer un compte</h1>
 
     <?php if(!empty($erreurs)): ?>
         <p class="error" style="color: red;"><?= $erreurs ?></p>
     <?php endif; ?>
+
+
+
+
 
     <form method="POST">
         <input type="text" name="username" placeholder="Pseudo" required>

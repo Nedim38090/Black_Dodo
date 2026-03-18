@@ -85,5 +85,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
-require_once 'profil_html.php';
+require_once 'profil_html.html';
 ?>

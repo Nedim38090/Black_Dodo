@@ -48,46 +48,6 @@ foreach ($produits as $p) {
 
 $cartCount = 0;
 foreach ($_SESSION['cart'] as $it) $cartCount += (int)$it['quantite'];
+require_once 'html_boutique.html';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Boutique | Cubic</title>
-    <link rel="stylesheet" href="boutique.css">
-</head>
-<body>
-<div class="shop-wrap">
-    <div class="shop-top">
-        <h1 class="shop-title">Boutique <span>Cubic</span></h1>
-        <a class="shop-link" href="panier.php">Voir mon panier (<?= $cartCount ?>)</a>
-        <a href="index.php" class="btn-return">Retour à l'acceuil</a>
-    </div>
 
-    <?php if (empty($parCategorie)): ?>
-        <div class="panel-card"><p class="panel-sub">Aucun produit disponible.</p></div>
-    <?php else: ?>
-        <?php foreach ($parCategorie as $cat => $items): ?>
-            <h2 class="cat-title"><?= htmlspecialchars($cat) ?></h2>
-            <div class="products-grid">
-                <?php foreach ($items as $p): ?>
-                    <div class="product-card">
-                        <div class="product-img" style="background-image:url('<?= htmlspecialchars($p['image_url'] ?: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1000&auto=format&fit=crop') ?>')"></div>
-                        <div class="product-body">
-                            <h3 class="product-name"><?= htmlspecialchars($p['nom']) ?></h3>
-                            <div class="product-price"><?= number_format((float)$p['prix'], 2, ',', ' ') ?> €</div>
-                            <form method="POST" class="product-form">
-                                <input type="hidden" name="produit_id" value="<?= (int)$p['id'] ?>">
-                                <input class="qty-input" type="number" name="quantite" value="1" min="1">
-                                <button class="btn-small" type="submit" name="add_to_cart">Ajouter</button>
-
-                            </form>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
-</body>
-</html>

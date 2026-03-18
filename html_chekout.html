@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | Cubic</title>
+    <link rel="stylesheet" href="boutique.css">
+</head>
+<body>
+<div class="panel">
+    <div class="panel-card" style="max-width:700px;">
+        <h1 class="panel-title">Validation de commande</h1>
+        <p class="panel-sub">Total à payer : <strong><?= number_format($total, 2, ',', ' ') ?> €</strong></p>
+
+        <?php if ($erreur): ?>
+        <div class="alert-error"><?= htmlspecialchars($erreur) ?></div>
+        <?php endif; ?>
+
+        <form method="POST">
+            <div class="checkout-grid">
+                <div>
+                    <label class="label">Nom</label>
+                    <input class="input" type="text" name="nom" required>
+                </div>
+                <div>
+                    <label class="label">Prénom</label>
+                    <input class="input" type="text" name="prenom" required>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <label class="label">Carte (16 chiffres)</label>
+                <input class="input" type="text" name="carte_bleue" pattern="\d{16}" maxlength="16" required>
+            </div>
+
+            <div style="margin-top:12px;">
+                <label class="label">CCB</label>
+                <input class="input" type="password" name="ccb" pattern="\d{3,4}" maxlength="4" required>
+            </div>
+
+            <div class="actions">
+                <button class="btn-primary" type="submit" name="confirm_order">Payer maintenant</button>
+                <a class="btn-outline" href="panier.php">Retour panier</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

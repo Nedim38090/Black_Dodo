@@ -1,8 +1,5 @@
 
-<?php
 
-
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,6 +9,7 @@
 </head>
 <body>
     <div class="auth-card">
+        <a href="index.php" class="btn-return">Retour à l'acceuil</a>
         <h1>Connexion</h1>
 
         <?php if (!empty($erreurs)): ?>
@@ -24,6 +22,9 @@
             <button type="submit">Se connecter</button>
 
         </form>
+        <p style="text-align: center; margin-top: 15px; font-size: 0.9em;">
+           Vous n'avez pas de compte ? <a href="inscription.php" style="color: #3498db; text-decoration: none; font-weight: bold;">Inscrivez-vous</a>
+        </p>
     </div>
 </body>
 </html>
