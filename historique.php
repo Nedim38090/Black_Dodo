@@ -1,0 +1,90 @@
+<?php
+require_once __DIR__ . "/db.php";
+
+if (!estConnecte()) {
+    header("Location: connexion.php");
+    exit;
+}
+
+$db = getDB();
+$userId = (int)$_SESSION["user"]["id"];
+
+$qAchats = $db->prepare("
+    SELECT a.id, a.date_achat, a.prix_paye, a.transaction_id, a.statut, p.nom AS produit
+    FROM achats a
+    JOIN produits p ON p.id = a.produit_id
+    WHERE a.utilisateur_id = ?
+    ORDER BY a.date_achat DESC
+");
+$qAchats->execute([$userId]);
+$achats = $qAchats->fetchAll(PDO::FETCH_ASSOC);
+
+$qSanctions = $db->prepare("
+    SELECT type, raison, date_sanction, est_actif
+    FROM sanctions
+    WHERE utilisateur_id = ?
+    ORDER BY date_sanction DESC
+");
+$qSanctions->execute([$userId]);
+$sanctions = $qSanctions->fetchAll(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique | Cubic</title>
+    <link rel="stylesheet" href="historique_css.css">
+</head>
+<body>
+<div class="auth-card" style="max-width:1000px;">
+    <h1>Mon <span>Historique</span></h1>
+    <p><a href="profil.php">← Retour au profil</a></p>
+
+    <h2>Mes achats</h2>
+    <?php if (empty($achats)): ?>
+        <p>Aucun achat pour le moment.</p>
+    <?php else: ?>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <th style="text-align:left; padding:8px;">Date</th>
+                <th style="text-align:left; padding:8px;">Produit</th>
+                <th style="text-align:left; padding:8px;">Prix</th>
+                <th style="text-align:left; padding:8px;">Statut</th>
+                <th style="text-align:left; padding:8px;">Transaction</th>
+            </tr>
+            <?php foreach ($achats as $achat): ?>
+                <tr>
+                    <td style="padding:8px;"><?= date("d/m/Y H:i", strtotime($achat["date_achat"])) ?></td>
+                    <td style="padding:8px;"><?= htmlspecialchars($achat["produit"]) ?></td>
+                    <td style="padding:8px;"><?= htmlspecialchars($achat["prix_paye"]) ?> €</td>
+                    <td style="padding:8px;"><?= htmlspecialchars($achat["statut"]) ?></td>
+                    <td style="padding:8px;"><?= htmlspecialchars($achat["transaction_id"]) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+
+    <h2 style="margin-top:30px;">Mes sanctions</h2>
+    <?php if (empty($sanctions)): ?>
+        <p>Aucune sanction.</p>
+    <?php else: ?>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <th style="text-align:left; padding:8px;">Date</th>
+                <th style="text-align:left; padding:8px;">Type</th>
+                <th style="text-align:left; padding:8px;">Raison</th>
+                <th style="text-align:left; padding:8px;">Active</th>
+            </tr>
+            <?php foreach ($sanctions as $s): ?>
+                <tr>
+                    <td style="padding:8px;"><?= date("d/m/Y H:i", strtotime($s["date_sanction"])) ?></td>
+                    <td style="padding:8px;"><?= htmlspecialchars($s["type"]) ?></td>
+                    <td style="padding:8px;"><?= htmlspecialchars($s["raison"]) ?></td>
+                    <td style="padding:8px;"><?= $s["est_actif"] ? "Oui" : "Non" ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+</div>
+</body>
+</html>

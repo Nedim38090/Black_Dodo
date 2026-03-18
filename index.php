@@ -79,7 +79,7 @@ try {
 
         <div class="hero-btns">
             <a href="#" class="btn-primary">REJOINDRE LE SERVEUR</a>
-            <a href="achat.php" class="btn-secondary">VOIR LA BOUTIQUE</a>
+            <a href="boutique.php" class="btn-secondary">VOIR LA BOUTIQUE</a>
         </div>
     </div>
 </header>
