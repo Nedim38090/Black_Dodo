@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . "/db.php";
 
@@ -13,8 +12,8 @@ $userId = (int)$_SESSION["user"]["id"];
 $erreur = "";
 $message = "";
 
-$q = $db->prepare("SELECT id, username, email, role,description_profil FROM utilisateurs WHERE id = ?");
-$q->execute(array($userId));
+$q = $db->prepare("SELECT id, username, email, role, description_profil, avatar, discord_id, twitter_handle FROM utilisateurs WHERE id = ?");
+$q->execute([$userId]);
 $user = $q->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
@@ -24,11 +23,11 @@ if (!$user) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
-    $email = isset($_POST["email"]) ? trim($_POST["email"]) : "";
-    $description = isset($_POST["description_profil"]) ? trim($_POST["description_profil"]) : "";
-    $discord = isset($_POST["discord_id"]) ? trim($_POST["discord_id"]) : "";
-    $twitter = isset($_POST["twitter_handle"]) ? trim($_POST["twitter_handle"]) : "";
+    $username = trim($_POST["username"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    $description = trim($_POST["description_profil"] ?? "");
+    $discord = trim($_POST["discord_id"] ?? "");
+    $twitter = trim($_POST["twitter_handle"] ?? "");
 
     if ($username === "" || $email === "") {
         $erreur = "Pseudo et email obligatoires.";
@@ -36,30 +35,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $erreur = "Email invalide.";
     } else {
         $check = $db->prepare("SELECT id FROM utilisateurs WHERE (email = ? OR username = ?) AND id != ?");
-        $check->execute(array($email, $username, $userId));
+        $check->execute([$email, $username, $userId]);
 
         if ($check->fetch()) {
             $erreur = "Pseudo ou email déjà utilisé.";
         } else {
-            $avatarPath = $user["avatar"];
+            $avatarPath = $user["avatar"] ?: "uploads/avatars/default.png";
 
-            if (isset($_FILES["avatar"]) && $_FILES["avatar"]["error"] == 0) {
-                $allowedExt = array("jpg", "jpeg", "png", "gif", "webp");
+            if (isset($_FILES["avatar"]) && $_FILES["avatar"]["error"] === 0) {
+                $allowedExt = ["jpg", "jpeg", "png", "gif", "webp"];
                 $fileName = $_FILES["avatar"]["name"];
                 $tmp = $_FILES["avatar"]["tmp_name"];
-                $size = $_FILES["avatar"]["size"];
+                $size = (int)$_FILES["avatar"]["size"];
                 $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                if (!in_array($ext, $allowedExt)) {
+                if (!in_array($ext, $allowedExt, true)) {
                     $erreur = "Format avatar invalide.";
                 } elseif ($size > 2 * 1024 * 1024) {
                     $erreur = "Avatar trop lourd (max 2 Mo).";
                 } else {
-                    if (!is_dir(__DIR__ . "/uploads/avatars")) {
-                        mkdir(__DIR__ . "/uploads/avatars", 0777, true);
+                    $dir = __DIR__ . "/uploads/avatars";
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
                     }
+
                     $newName = "avatar_" . $userId . "_" . time() . "." . $ext;
-                    $dest = __DIR__ . "/uploads/avatars/" . $newName;
+                    $dest = $dir . "/" . $newName;
+
                     if (move_uploaded_file($tmp, $dest)) {
                         $avatarPath = "uploads/avatars/" . $newName;
                     } else {
@@ -70,14 +72,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if ($erreur === "") {
                 $up = $db->prepare("UPDATE utilisateurs SET username = ?, email = ?, avatar = ?, description_profil = ?, discord_id = ?, twitter_handle = ? WHERE id = ?");
-                $up->execute(array($username, $email, $avatarPath, $description, $discord, $twitter, $userId));
+                $up->execute([$username, $email, $avatarPath, $description, $discord, $twitter, $userId]);
+
                 $_SESSION["user"]["username"] = $username;
+                $_SESSION["user"]["email"] = $email;
+
                 $message = "Profil mis à jour.";
-                $q->execute(array($userId));
+
+                $q->execute([$userId]);
                 $user = $q->fetch(PDO::FETCH_ASSOC);
             }
         }
     }
 }
-
-require_once __DIR__ . "/profil_html.php";?>
+require_once 'profil_html.php';
+?>

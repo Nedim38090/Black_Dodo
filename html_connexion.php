@@ -14,7 +14,9 @@
     <div class="auth-card">
         <h1>Connexion</h1>
 
-
+        <?php if (!empty($erreurs)): ?>
+            <p style="color:red; text-align:center;"><?= htmlspecialchars($erreurs) ?></p>
+        <?php endif; ?>
 
         <form method="POST">
             <input type="email" name="email" placeholder="Email" required>
