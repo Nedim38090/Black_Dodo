@@ -116,7 +116,7 @@ try {
     </main>
 
     <aside>
-        <h2 class="section-title">TOP JOUEURS</h2>
+        <h2 class="section-title">TOP DONNATEURS</h2>
         <div class="leaderboard-card">
             <?php if (empty($topJoueurs)): ?>
                 <div class="player-row">
