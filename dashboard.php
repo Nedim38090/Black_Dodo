@@ -1,112 +1,121 @@
-
-<?php
-
-require_once "db.php";
-
-
-if (!estAdmin()) {
-    header("Location: ../connexion.php");
-    exit;
-}
-
-$db = getDB();
-
-// --- 1. RÉCUPÉRATION DES KPI ---
-
-// Total Joueurs
-$res = $db->query("SELECT COUNT(*) FROM utilisateurs WHERE role = 'joueur'");
-$totalJoueurs = $res->fetchColumn();
-
-// Total Articles
-$res = $db->query("SELECT COUNT(*) FROM articles");
-$totalArticles = $res->fetchColumn();
-
-// Chiffre d'Affaires (Somme des prix payés)
-$res = $db->query("SELECT SUM(prix_paye) FROM achats");
-$caTotal = $res->fetchColumn() ?: 0; // Si vide, affiche 0
-
-// --- 2. RÉCUPÉRATION DES ALERTES (Activité récente) ---
-
-// 5 dernières inscriptions
-$dernièresInscriptions = $db->query("SELECT username, date_inscription FROM utilisateurs ORDER BY date_inscription DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
-
-// 5 derniers achats (avec jointure pour avoir les noms)
-$derniersAchats = $db->query("
-    SELECT u.username, p.nom as produit, a.prix_paye, a.date_achat 
-    FROM achats a
-    JOIN utilisateurs u ON a.utilisateur_id = u.id
-    JOIN produits p ON a.produit_id = p.id
-    ORDER BY a.date_achat DESC 
-    LIMIT 5
-")->fetchAll(PDO::FETCH_ASSOC);
-?>
-
+<?php $current_page = basename($_SERVER['PHP_SELF']); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Admin - Cubic</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f4f4; margin: 20px; }
-        .stats-container { display: flex; gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-        .card h3 { margin: 0; color: #666; font-size: 14px; text-transform: uppercase; }
-        .card p { font-size: 24px; font-weight: bold; margin: 10px 0 0; color: #2c3e50; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .recent-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
-        th { background: #f8f9fa; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black dodo Panel</title>
+    <link rel="stylesheet" href="paneladmin.css">
+    <link rel="stylesheet" href="effet_page.css">
 </head>
 <body>
+<div class="loader-content page-transition">
+    <div class="futuristic-loader">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="dot"></div>
+    </div>
+    <span class="loader-text">SCANNING SYSTEM...</span>
+</div>
+<div class="mouse-glow"></div>
+<div class="grid-overlay"></div>
+<script src="effet_souris.js"></script>
 
-    <h1>Tableau de Bord Administrateur</h1>
-    <p><a href="../home.php">← Retour au site</a> | <a href="gestion_news.php">Gérer les News</a></p>
+    <nav class="sidebar">
+    <div class="logo">BLACK DODO</div>
 
-    <div class="stats-container">
-        <div class="card">
-            <h3>Joueurs Inscrits</h3>
-            <p><?= $totalJoueurs ?></p>
-        </div>
-        <div class="card">
-            <h3>Articles Publiés</h3>
-            <p><?= $totalArticles ?></p>
-        </div>
-        <div class="card">
-            <h3>Revenus Boutique</h3>
-            <p><?= number_format($caTotal, 2) ?> €</p>
+
+    
+    <div class="nav-section">
+        <a href="index.php" class="btn-return">Retour à l'acceuil</a>
+        <a href="dashboard.php" class="nav-link active">
+            <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="historique_user.php" class="nav-link ">
+            <span class="icon">💸</span> Historique Flux
+        </a>
+        <a href="sanctions.php" class="nav-link">
+            <span class="icon">⚠️</span> Sanctions
+        </a>
+    </div>
+
+    
+</nav>
+
+    <main>
+        <header>
+            <h1>Console de Commande</h1>
+            <p>Admin // Status : Actif </p> <!--On sait pas faire du HTML j'ai peur pour la suite || Mathys Noa-->
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Chiffre d'affaire</h3>
+                <p>24.8M €</p>
+            </div>
+            <div class="stat-card" ><!--On mets pas de CSS dans du HTML sale fou || Mathys Noa-->
+                <h3>nombre d'utilisateurs</h3>
+                <p>12.4k</p>
+            </div>
+            <div class="stat-card">
+                <h3>nouveaux utilisateurs</h3>
+                <p>1407</p>
+            </div>
+            <div class="stat-card">
+                <h3>membres actifs</h3>
+                <p>1,204</p>
+            </div>
+        </section>
+
+        <section class="editor-panel">
+    <div class="editor-header">
+        
+        <div class="editor-actions">
+            <h2>CRÉER UNE ANNONCE</h2>
+            <button class="btn-primary" >PUBLIER</button>
         </div>
     </div>
 
-    <div class="grid">
-        <div class="recent-box">
-            <h3>Dernières Inscriptions</h3>
-            <table>
-                <tr><th>Pseudo</th><th>Date</th></tr>
-                <?php foreach($dernièresInscriptions as $inscrit): ?>
-                <tr>
-                    <td><?= htmlspecialchars($inscrit['username']) ?></td>
-                    <td><?= date('d/m H:i', strtotime($inscrit['date_inscription'])) ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
+    <div class="editor-body">
+        <div class="input-group">
+            <label>TITRE DE L'ARTICLE</label>
+            <input type="text" id="postTitle" placeholder="Entrez le titre de l'article...">
         </div>
 
-        <div class="recent-box">
-            <h3>Ventes Récentes</h3>
-            <table>
-                <tr><th>Joueur</th><th>Produit</th><th>Prix</th></tr>
-                <?php foreach($derniersAchats as $achat): ?>
-                <tr>
-                    <td><?= htmlspecialchars($achat['username']) ?></td>
-                    <td><?= htmlspecialchars($achat['produit']) ?></td>
-                    <td><?= $achat['prix_paye'] ?> €</td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
+        <div class="input-row">
+            <div class="input-group">
+                <label>CATÉGORIE</label>
+                <select id="postCategory">
+                    <option value="news">ANNONCE SYSTÈME</option>
+                    <option value="patch">PATCH NOTES</option>
+                    <option value="event">ÉVÈNEMENT</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>NIVEAU D'ACCÈS</label>
+                <select id="postSecurity">
+                    <option value="1">PUBLIC</option>
+                    <option value="2">VIP</option>
+                </select>
+            </div>
+        </div>
+        <div class="input-group">
+                    <label>IMAGE DE COUVERTURE (OPTIONNEL)</label>
+                    <div class="image-upload-container" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="icon">📷</div>
+                        <div class="text">GLISSER-DÉPOSER OU CLIQUER POUR UPLOADER</div>
+                        <img id="imagePreview" src="#" alt="Aperçu de l'image">
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+        <div class="input-group">
+            <label>CONTENU DU MESSAGE</label>
+            <textarea id="postContent" rows="10" placeholder="Tapez le contenu de l'article ici..."></textarea>
         </div>
     </div>
-
+</section>
+    </main>
+<script src="effet_page.js"></script>
 </body>
 </html>
